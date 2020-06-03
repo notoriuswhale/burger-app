@@ -14,10 +14,17 @@ const withErrorHandler = (RenderComponent, axios) => {
 
         }
 
-        // componentWillMount() {
+        componentWillMount() {
         //     Can't place this in constructor got an error on setState in constructor;
         //     placed interceptors in render.
-        // }
+            this.req = axios.interceptors.request.use(req => {
+                this.setState({error: null});
+                return req;
+            });
+            this.res = axios.interceptors.response.use(res => res, error => {
+                this.setState({error: error});
+            });
+        }
 
         componentWillUnmount() {
             axios.interceptors.response.eject(this.res);
@@ -30,15 +37,9 @@ const withErrorHandler = (RenderComponent, axios) => {
             })
         }
         render() {
-            if(!this.res && !this.req){
-                this.req = axios.interceptors.request.use(req => {
-                    this.setState({error: null});
-                    return req;
-                });
-                this.res = axios.interceptors.response.use(res => res, error => {
-                    this.setState({error: error});
-                });
-            }
+            // if(!this.res && !this.req){
+            //
+            // }
 
             let errorMessage = this.state.error ? this.state.error.message : null;
             return (
@@ -46,7 +47,7 @@ const withErrorHandler = (RenderComponent, axios) => {
                     <Modal show={this.state.error} closeModal={this.errorConfirmedHandler}>
                         <p>{errorMessage}</p>
                     </Modal>
-                    <RenderComponent/>
+                    <RenderComponent {...this.props}/>
                 </React.Fragment>
             );
         }

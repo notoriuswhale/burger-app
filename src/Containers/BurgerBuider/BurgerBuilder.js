@@ -7,6 +7,7 @@ import Modal from "../../Components/UI/Modal/Modal";
 import OrderSummary from "../../Components/Burger/OrderSummary/OrderSummary";
 import Spiner from "../../Components/UI/Spiner/Spiner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import {Redirect} from "react-router-dom";
 
 const INGREDIENT_PRICES = {
     salad: 0.4,
@@ -29,10 +30,12 @@ class BurgerBuilder extends Component {
             .then(resp => {
                 this.setState({
                     ingredients: resp.data,
-                })
+                });
+                this.updatePurchasable();
             }).catch(err => {
                 this.setState({error: true})
-        })
+        });
+        // console.log(this.props);
     }
 
     addIgredientHandler = (type) => {
@@ -84,29 +87,14 @@ class BurgerBuilder extends Component {
     }
     purchaseContinueHandler = () => {
         //alert('You continue!')
-        this.setState({loading: true});
-        let order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice.toFixed(2),
-            customer: {
-                name: 'Vitaliy',
-                address: {
-                    street: 'some street 8',
-                    zipCode: '482226',
-                    country: 'Ukraine',
-                },
-                email: 'example@example.com',
-            }
-        };
 
-        axiosInst.post('/orders.json', order)
-            .then(resp => {
-                this.setState({loading: false, purchasing: false,});
-            })
-            .catch((error => {
-                //this.setState({loading: false, purchasing: false,});
-                console.log('hi');
-            }));
+        let queryParams = [];
+        for(let ingr in this.state.ingredients){
+                queryParams.push(encodeURIComponent(ingr) +  '=' + encodeURIComponent(this.state.ingredients[ingr]))
+        }
+        queryParams.push(encodeURIComponent('price') +  '=' + encodeURIComponent(this.state.totalPrice.toFixed(2)))
+
+        this.props.history.push('/checkout?' + queryParams.join('&'));
     }
 
     render() {
