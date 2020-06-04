@@ -7,7 +7,6 @@ import Modal from "../../Components/UI/Modal/Modal";
 import OrderSummary from "../../Components/Burger/OrderSummary/OrderSummary";
 import Spiner from "../../Components/UI/Spiner/Spiner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import {Redirect} from "react-router-dom";
 
 const INGREDIENT_PRICES = {
     salad: 0.4,
