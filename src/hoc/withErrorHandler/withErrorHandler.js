@@ -21,8 +21,11 @@ const withErrorHandler = (RenderComponent, axios) => {
                 this.setState({error: null});
                 return req;
             });
-            this.res = axios.interceptors.response.use(res => res, error => {
+            this.res = axios.interceptors.response.use(res => res,
+                    error => {
+            //     console.log('error');
                 this.setState({error: error});
+                return Promise.reject(error)
             });
         }
 

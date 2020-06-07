@@ -2,9 +2,9 @@ import React, {Component} from "react";
 
 import styles from "./ContactData.module.css";
 import Button from "../../../Components/UI/Button/Button";
-import axiosInst from "../../../API/FirebaseDatabase"
-import Spiner from "../../../Components/UI/Spiner/Spiner";
 import Input from "../../../Components/UI/Input/Input";
+import {connect} from "react-redux";
+import * as actions from "../../../store/actions/index"
 
 class ContactData extends Component {
     state = {
@@ -120,14 +120,12 @@ class ContactData extends Component {
         if (rules.isRequired) valid = value.trim() !== '' && valid;
         if (rules.minLength) valid = value.length >= rules.minLength && valid;
         if (rules.maxLength) valid = value.length <= rules.maxLength && valid;
-
         return valid;
     }
 
     orderHandler = (e) => {
         e.preventDefault();
 
-        this.setState({loading: true});
         let orderData = {};
 
         for (let i in this.state.orderForm) {
@@ -136,19 +134,12 @@ class ContactData extends Component {
 
         let order = {
             ingredients: this.props.ingredients,
-            price: this.props.totalPrice.toFixed(2),
+            price: this.props.price.toFixed(2),
             orderData: orderData,
         };
+        this.props.submitOrder(order);
 
-        axiosInst.post('/orders.json', order)
-            .then(resp => {
-                this.setState({loading: false});
-                this.props.history.push('/')
-            })
-            .catch((error => {
-                this.setState({loading: false, purchasing: false,});
-                console.log('hi');
-            }));
+
     }
 
     changeInputHandler = (e, id) => {
@@ -195,7 +186,6 @@ class ContactData extends Component {
                 <Button btnType={'Success'} disabled={!this.state.formValid}>ORDER</Button>
             </form>
         );
-        if (this.state.loading) form = <Spiner/>;
         return (
             <div className={styles.ContactData}>
                 <h3>Enter your Contact Data</h3>
@@ -204,4 +194,18 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ingredients: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        submitOrder: (order) => dispatch(actions.submitOrder(order)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactData);

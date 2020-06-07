@@ -1,26 +1,15 @@
 import React from "react";
 
-import styles from "./Checkout.module.css"
+import styles from "./Checkout.module.css";
+import axiosInst from "../../API/FirebaseDatabase";
 import CheckoutSummary from "../../Components/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
-import {Route} from "react-router-dom";
+import {Redirect, Route} from "react-router-dom";
+import {connect} from "react-redux";
+import Spiner from "../../Components/UI/Spiner/Spiner";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 class Checkout extends React.Component {
-    constructor(props) {
-        super(props);
-        const query = new URLSearchParams(props.location.search)
-        const ingredients = {};
-        let price =0;
-        for (let ingredient of query.entries()) {
-            if(ingredient[0] === 'price') price = +ingredient[1];
-            else ingredients[ingredient[0]] = +ingredient[1];
-        }
-        this.state = {
-            ingredients: ingredients,
-            price: price,
-        }
-
-    }
 
     checkoutCloseHandler = () => {
         this.props.history.push('/');
@@ -30,17 +19,34 @@ class Checkout extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <CheckoutSummary ingredients={this.state.ingredients}
-                                 canceled={this.checkoutCloseHandler}
-                                 continued={this.checkoutContinueHandler}/>
-                                 <Route path={'/checkout/contact-data'}
-                                        render={(props) => <ContactData ingredients={this.state.ingredients} totalPrice={this.state.price} {...props}/>} />
+        let content = <Redirect to='/'/>;
 
-            </div>
-        );
+        //need to change if ingredients is not null but are all 0 then redirect to '/'
+
+        if (this.props.ingredients) {
+            content = (
+                <div>
+                    <CheckoutSummary ingredients={this.props.ingredients}
+                                     canceled={this.checkoutCloseHandler}
+                                     continued={this.checkoutContinueHandler}/>
+                    <Route path={'/checkout/contact-data'}
+                           component={ContactData}/>
+                </div>);
+        }
+        if (this.props.loading) content = <Spiner/>;
+        if (this.props.error) content = <p>Can't send order!</p>
+        if (!this.props.purchasing) content = <Redirect to='/'/>;
+        return content
     }
 }
 
-export default Checkout
+const mapStateToProps = state => {
+    return {
+        ingredients: state.burgerBuilder.ingredients,
+        loading: state.orders.loading,
+        error: state.orders.error,
+        purchasing: state.orders.purchasing
+    }
+}
+
+export default connect(mapStateToProps)(withErrorHandler(Checkout, axiosInst));
