@@ -15,11 +15,11 @@ const reducer = (state = initialState, action) => {
                 purchasing: true,
                 error: false,
             };
-        // case actionTypes.PURCHASE_FINISH:
-        //     return {
-        //         ...state,
-        //         purchasing: false,
-        //     };
+        case actionTypes.PURCHASE_FINISH:
+            return {
+                ...state,
+                purchasing: false,
+            };
         case actionTypes.SUBMIT_ORDER_START:
             return {
                 ...state,

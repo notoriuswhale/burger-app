@@ -6,11 +6,11 @@ export const purchaseInit = () => {
         type: actionTypes.PURCHASE_INIT,
     }
 }
-// export const purchaseFinish = () => {
-//     return {
-//         type: actionTypes.PURCHASE_FINISH,
-//     }
-// }
+export const purchaseFinish = () => {
+    return {
+        type: actionTypes.PURCHASE_FINISH,
+    }
+}
 
 export const submitOrderStart = () => {
     return {
@@ -70,7 +70,7 @@ export const fetchOrdersFail = (error) => {
 export const fetchOrders = () => {
     return dispatch => {
         dispatch(fetchOrdersStart());
-        axiosInst.get('/orders')
+        axiosInst.get('/orders.json')
             .then(resp => {
                 dispatch(fetchOrdersSuccess(resp.data));
             }).catch(error => {

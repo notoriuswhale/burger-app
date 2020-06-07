@@ -8,8 +8,13 @@ import {Redirect, Route} from "react-router-dom";
 import {connect} from "react-redux";
 import Spiner from "../../Components/UI/Spiner/Spiner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import {purchaseFinish} from "../../store/actions";
 
 class Checkout extends React.Component {
+
+    componentWillUnmount() {
+        this.props.purchaseFinish();
+    }
 
     checkoutCloseHandler = () => {
         this.props.history.push('/');
@@ -49,4 +54,10 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(withErrorHandler(Checkout, axiosInst));
+const mapDispatchToProps = dispatch => {
+    return {
+        purchaseFinish: () => dispatch(purchaseFinish()),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Checkout, axiosInst));

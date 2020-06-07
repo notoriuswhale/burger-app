@@ -6,5 +6,6 @@ export {
 export {
     submitOrder,
     purchaseInit,
+    purchaseFinish,
     fetchOrders
 } from './orders'
