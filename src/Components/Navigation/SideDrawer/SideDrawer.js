@@ -8,13 +8,12 @@ const SideDrawer = (props) => {
     return (
         <React.Fragment>
             <Backdrop clicked={props.clicked} show={props.show}/>
-            <div className={[styles.SideDrawer, props.show ? styles.Open : styles.Close].join(' ')}>
+            <div className={[styles.SideDrawer, props.show ? styles.Open : styles.Close].join(' ')} onClick={props.clicked}>
                 <div className={styles.Logo}>
-                    <Logo />
+                    <Logo/>
                 </div>
-
                 <nav>
-                    <NavigationItems />
+                    <NavigationItems isAuthenticated={props.isAuthenticated}/>
                 </nav>
             </div>
         </React.Fragment>

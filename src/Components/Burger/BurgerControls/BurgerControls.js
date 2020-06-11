@@ -21,7 +21,7 @@ const BurgerControls = (props) => {
             {burgerControlsRender}
             <button className={styles.OrderButton}
                     onClick={props.onPurchase}
-                    disabled={!props.purchasable}>ORDER NOW</button>
+                    disabled={!props.purchasable}>{props.isAuthenticated ? 'ORDER NOW' : 'SIGN IN TO ORDER'}</button>
         </div>
     )
 }

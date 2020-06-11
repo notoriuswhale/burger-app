@@ -115,12 +115,34 @@ class ContactData extends Component {
     }
 
     inputValidate = (value, rules) => {
-        let valid = true;
-        if(!rules) return true;
-        if (rules.isRequired) valid = value.trim() !== '' && valid;
-        if (rules.minLength) valid = value.length >= rules.minLength && valid;
-        if (rules.maxLength) valid = value.length <= rules.maxLength && valid;
-        return valid;
+        let isValid = true;
+        if ( !rules ) {
+            return true;
+        }
+
+        if ( rules.required ) {
+            isValid = value.trim() !== '' && isValid;
+        }
+
+        if ( rules.minLength ) {
+            isValid = value.length >= rules.minLength && isValid
+        }
+
+        if ( rules.maxLength ) {
+            isValid = value.length <= rules.maxLength && isValid
+        }
+
+        if ( rules.isEmail ) {
+            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            isValid = pattern.test( value ) && isValid
+        }
+
+        if ( rules.isNumeric ) {
+            const pattern = /^\d+$/;
+            isValid = pattern.test( value ) && isValid
+        }
+
+        return isValid;
     }
 
     orderHandler = (e) => {
@@ -136,8 +158,9 @@ class ContactData extends Component {
             ingredients: this.props.ingredients,
             price: this.props.price.toFixed(2),
             orderData: orderData,
+            userId: this.props.userId
         };
-        this.props.submitOrder(order);
+        this.props.submitOrder(order, this.props.token);
 
 
     }
@@ -198,13 +221,14 @@ const mapStateToProps = state => {
     return {
         ingredients: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-
+        token: state.auth.token,
+        userId: state.auth.userId
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        submitOrder: (order) => dispatch(actions.submitOrder(order)),
+        submitOrder: (order, token) => dispatch(actions.submitOrder(order, token)),
     }
 }
 

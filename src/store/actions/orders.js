@@ -31,10 +31,10 @@ export const submitOrderFail = (error) => {
     }
 }
 
-export const submitOrder = (order) => {
+export const submitOrder = (order, token) => {
     return dispatch => {
         dispatch(submitOrderStart());
-        axiosInst.post('/orders.json', order)
+        axiosInst.post('/orders.json?auth='+token, order)
             .then(resp => {
                 dispatch(submitOrderSuccess());
             }).catch(error => {
@@ -67,10 +67,11 @@ export const fetchOrdersFail = (error) => {
     }
 };
 
-export const fetchOrders = () => {
+export const fetchOrders = (token, userId) => {
     return dispatch => {
         dispatch(fetchOrdersStart());
-        axiosInst.get('/orders.json')
+        const queryParams = '?auth=' + token +'&orderBy="userId"&equalTo="' + userId +'"'
+        axiosInst.get('/orders.json'+queryParams)
             .then(resp => {
                 dispatch(fetchOrdersSuccess(resp.data));
             }).catch(error => {
