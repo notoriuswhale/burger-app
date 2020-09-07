@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios from "axios";
 
 const FirebaseInstance = axios.create({
-    baseURL: 'https://yellowcultivator-burgerapp.firebaseio.com/'
+    baseURL: "https://testproj-2d6d9.firebaseio.com/",
 });
 
 export default FirebaseInstance;
