@@ -1,5 +1,12 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## [Demo](https://notoriuswhale-burger.netlify.app/)
+
+## About
+
+This project I made on course dedicated to react.
+App using react, redux, react-router + firebase for storage and authentication.
+
 ## Available Scripts
 
 In the project directory, you can run:
